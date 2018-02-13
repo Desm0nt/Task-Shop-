@@ -29,25 +29,25 @@ namespace ConsoleApp2
 
             Shop.ShowAllCustomers();
             Console.WriteLine("\n\n  Please select your customer number.");
-            int num = -1;
+            int num = 0;
             do
             {
                 var customerString = Console.ReadLine();
                 if (int.TryParse(customerString, out num))
                 {
-                    if (num < 0 || num > Shop.Customers.Count - 1)
-                        Console.WriteLine("Customer not exist. Number must between 1 and " + (Shop.Customers.Count - 1) + ".");
+                    if (num < 1 || num > Shop.Customers.Count)
+                        Console.WriteLine("Customer not exist. Number must between 1 and " + Shop.Customers.Count + ".");
                 }
                 else
                     Console.WriteLine("Number must be int32. Please try again.");
-            } while (num < 0 || num > Shop.Customers.Count - 1);
+            } while (num < 1 || num > Shop.Customers.Count);
 
-            _currentCustomerId = Shop.SelectCustomer(num);           
+            _currentCustomerId = Shop.SelectCustomer(num-1);           
 
-            Console.WriteLine("\nPress O to make order, L to list orders, P to checkout, D to delete order, S to show customers info or E for exit.");
             string key;
             do
             {
+                Console.WriteLine("\nPress O to make order, L to list orders, P to checkout, D to delete order, S to show customers info or E for exit.");
                 var clk = Console.ReadKey();
                 key = clk.Key.ToString();
                 switch (key)
@@ -70,9 +70,6 @@ namespace ConsoleApp2
                         Console.WriteLine("\n");
                         Shop.ShowAllCustomers();
                         break;
-                    default:
-                        Console.WriteLine("\nPlease press O to make order, L to list orders, P to checkout, D to delete order or E for exit.");
-                        break;
                 }
             } while (key != "E");
         }
@@ -82,43 +79,43 @@ namespace ConsoleApp2
         static void MakeOrder()
         {
             Console.WriteLine("\n  Please select a product number.");
-            int num = -1;
+            int num = 0;
             do
             {
                 var productString = Console.ReadLine();
                 if (int.TryParse(productString, out num))
                 {
-                    if (num < 0 || num > Shop.Products.Count - 1)
-                        Console.WriteLine("Product not exist. Number must between 1 and " + (Shop.Products.Count - 1) + ".");
+                    if (num < 1 || num > Shop.Products.Count)
+                        Console.WriteLine("Product not exist. Number must between 1 and " + Shop.Products.Count + ".");
                 }
                 else
                     Console.WriteLine("Number must be int32. Please try again.");
-            } while (num < 0 || num > Shop.Products.Count - 1);
+            } while (num < 1 || num > Shop.Products.Count);
 
             Console.WriteLine("  Please select products count.");
             int col = CheckedValue();
-            Shop.OrderProduct(_currentCustomerId, num, col);
-            Console.WriteLine("\n" + col + " " + Shop.Products[num].Name + "s successfuly ordered");
+            Shop.OrderProduct(_currentCustomerId, num-1, col);
+            Console.WriteLine("\n Your order for " + col + " " + Shop.Products[num-1].Name + " successfuly placed.");
         }
 
         static void DeleteOrder(List<Order> orders)
         {
             Shop.ShowCustomersOrders(_currentCustomerId);
             Console.WriteLine("\n  Please select an order number to delete.");
-            int num = -1;
+            int num = 0;
             do
             {
                 var productString = Console.ReadLine();
                 if (int.TryParse(productString, out num))
                 {
-                    if (num < 0 || num > orders.Count - 1)
-                        Console.WriteLine("Order not exist. Number must between 1 and " + (orders.Count - 1) + ".");
+                    if (num < 1 || num > orders.Count)
+                        Console.WriteLine("Order not exist. Number must between 1 and " + orders.Count + ".");
                 }
                 else
                     Console.WriteLine("Number must be int32. Please try again.");
-            } while (num < 0 || num > orders.Count - 1);
+            } while (num < 1 || num > orders.Count);
 
-            Shop.RemoveOrder(orders[num].Orderid);
+            Shop.RemoveOrder(orders[num-1].Orderid);
         }
 
         static int CheckedValue()

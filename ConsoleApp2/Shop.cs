@@ -66,7 +66,7 @@ namespace ConsoleApp2
         /// </summary>
         public static void ShowAllCustomers()
         {
-            int i = 0;
+            int i = 1;
             foreach (var customer in Customers)
             {
                 Console.WriteLine(i +") Name: " + customer.Name + ", Bank: " + customer.Bank + " $" );
@@ -80,7 +80,7 @@ namespace ConsoleApp2
         public static void ShowAllProducts()
         {
             Console.WriteLine("\n LIST OF ALL PRODUCTS");
-            int i = 0;
+            int i = 1;
             foreach (var product in Products)
             {
                 Console.WriteLine(i + ") Name: " + product.Name + ", cost: " + product.Cost + " $");
@@ -106,16 +106,14 @@ namespace ConsoleApp2
         public static void ShowCustomersOrders(string customerid)
         {
             Console.WriteLine("\n LIST OF ALL ORDERS");
-            int i = 0;
+            int i = 1;
             decimal sum = 0;
-            foreach (var order in Orders)
+            var customerorders = Orders.Where(x => x.Customerid.Contains(customerid)).ToList();
+            foreach (var order in customerorders)
             {
-                if (order.Customerid == customerid)
-                {
                     Console.WriteLine(i + ") Product Name: " + order.ProductName + ", count: " + order.ProductCount + ", cost: " + order.OrderCost + " $");
                     sum += order.OrderCost;
                     i++;
-                }
             }
             Console.WriteLine("Total cost: " + sum + " $");
         }
