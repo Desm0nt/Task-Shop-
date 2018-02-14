@@ -15,10 +15,10 @@ namespace ConsoleApp2
         static Shop()
         {
             Products = new List<Product>();
-            Customers =  new List<Customer>();
+            Customers = new List<Customer>();
             Orders = new List<Order>();
         }
-        
+
         /// <summary>
         /// Добавление продукта в базу
         /// </summary>
@@ -26,7 +26,7 @@ namespace ConsoleApp2
         /// <param name="cost">Стоимость</param>
         public static void AddProduct(string name, decimal cost)
         {
-            Products.Add(new Product {Name = name, Cost = cost});
+            Products.Add(new Product { Name = name, Cost = cost });
         }
 
         /// <summary>
@@ -43,12 +43,10 @@ namespace ConsoleApp2
         /// Оформление заказа в корзину
         /// </summary>
         /// <param name="customerid">ID покупателя</param>
-        /// <param name="customername">Имя покупателя</param>
-        /// <param name="productname">Имя продукта</param>
-        /// <param name="count">Количество</param>
-        private static void AddOrder(string customerid, string customername, string productname, int count, decimal cost)
+        /// <param name="cart">Корзина заказа</param>
+        private static void AddOrder(string customerid, List<Order.OrderCart> cart)
         {
-            Orders.Add(new Order(customerid, customername, productname, count, cost));
+            Orders.Add(new Order(customerid, cart));
         }
 
         /// <summary>
@@ -69,7 +67,7 @@ namespace ConsoleApp2
             int i = 1;
             foreach (var customer in Customers)
             {
-                Console.WriteLine(i +") Name: " + customer.Name + ", Bank: " + customer.Bank + " $" );
+                Console.WriteLine(i + ") Name: " + customer.Name + ", Bank: " + customer.Bank + " $");
                 i++;
             }
         }
@@ -92,12 +90,11 @@ namespace ConsoleApp2
         /// Оформление заказа
         /// </summary>
         /// <param name="customerid">ID покупателя</param>
-        /// <param name="num">Продукт</param>
-        /// <param name="count">Количество</param>
-        public static void OrderProduct(string customerid, int num, int count)
+        /// <param name="cart">Корзина заказа</param>
+        public static void OrderProduct(string customerid, List<Order.OrderCart> cart)
         {
-            string customername = Customers.Find(x => x.Customerid.Contains(customerid)).Name;
-            AddOrder(customerid, customername, Products[num].Name, count, Products[num].Cost * count);
+            //string customername = Customers.Find(x => x.Customerid.Contains(customerid)).Name;
+            AddOrder(customerid, cart);
         }
 
         /// <summary>
@@ -111,9 +108,13 @@ namespace ConsoleApp2
             var customerorders = Orders.Where(x => x.Customerid.Contains(customerid)).ToList();
             foreach (var order in customerorders)
             {
-                    Console.WriteLine(i + ") Product Name: " + order.ProductName + ", count: " + order.ProductCount + ", cost: " + order.OrderCost + " $");
-                    sum += order.OrderCost;
-                    i++;
+                Console.WriteLine(i + " Order: ");
+                foreach (var stash in order.Cart)
+                {
+                    Console.WriteLine("Name: " + stash.ProductName + ", Count: " + stash.ProductCount + ", Summary cost: " + stash.SumCost + " $");
+                }
+                sum += order.OrderCost;
+                i++;
             }
             Console.WriteLine("Total cost: " + sum + " $");
         }

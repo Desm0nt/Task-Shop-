@@ -78,24 +78,52 @@ namespace ConsoleApp2
         //make an order
         static void MakeOrder()
         {
-            Console.WriteLine("\n  Please select a product number.");
-            int num = 0;
+            bool choosed = false;
+            List<Order.OrderCart> cart = new List<Order.OrderCart>();
+            string key;
             do
             {
-                var productString = Console.ReadLine();
-                if (int.TryParse(productString, out num))
+                Console.WriteLine("\nPress A to add product to cart or C to place an order.");
+                var clk = Console.ReadKey();
+                key = clk.Key.ToString();
+                switch (key)
                 {
-                    if (num < 1 || num > Shop.Products.Count)
-                        Console.WriteLine("Product not exist. Number must between 1 and " + Shop.Products.Count + ".");
-                }
-                else
-                    Console.WriteLine("Number must be int32. Please try again.");
-            } while (num < 1 || num > Shop.Products.Count);
+                    case "A":
+                        Console.WriteLine("\n  Please select a product number.");
+                        int num = 0;
+                        do
+                        {
+                            var productString = Console.ReadLine();
+                            if (int.TryParse(productString, out num))
+                            {
+                                if (num < 1 || num > Shop.Products.Count)
+                                    Console.WriteLine("Product not exist. Number must between 1 and " + Shop.Products.Count + ".");
+                            }
+                            else
+                                Console.WriteLine("Number must be int32. Please try again.");
+                        } while (num < 1 || num > Shop.Products.Count);
 
-            Console.WriteLine("  Please select products count.");
-            int col = CheckedValue();
-            Shop.OrderProduct(_currentCustomerId, num-1, col);
-            Console.WriteLine("\n Your order for " + col + " " + Shop.Products[num-1].Name + " successfuly placed.");
+                        Console.WriteLine("  Please select products count.");
+                        int col = CheckedValue();
+                        cart.Add( new Order.OrderCart {ProductName = Shop.Products[num - 1].Name, ProductCount  = col, SumCost = Shop.Products[num - 1].Cost * col});
+                        Console.WriteLine("\n You add to cart " + col + " " + Shop.Products[num - 1].Name);
+                        choosed = true;
+                        break;
+                    case "C":
+                        if (choosed == true)
+                        {
+                            Shop.OrderProduct(_currentCustomerId, cart);
+                            Console.WriteLine("\n Order successfuly placed.");
+                            key = "E";
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n Nothin to order.");
+                            key = "E";
+                        }
+                        break;
+                }
+            } while (key != "E");
         }
 
         static void DeleteOrder(List<Order> orders)
